@@ -4,6 +4,8 @@
 
 A small outdoor activity planner powered by open-source, local NLP. Tell it how you feel, choose your time and energy, and get one doable adventure. Save the plan, lock your screen, and notice something outside.
 
+[Deploy to Render](https://render.com/deploy?repo=https://github.com/swapnil-coder5/Touch-Grass)
+
 ## Run
 
 Requires Node.js 22 or newer and npm. No API keys, database, account, or paid service required.
