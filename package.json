@@ -1,0 +1,9 @@
+{
+  "name": "touch-grass",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node server.js", "dev": "node --watch server.js", "test": "node --test" },
+  "dependencies": { "wink-nlp": "2.4.0", "wink-eng-lite-web-model": "1.8.1" },
+  "engines": { "node": ">=22" }
+}
