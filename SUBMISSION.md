@@ -21,6 +21,6 @@ A closed cloud model would add a network dependency, a place for sensitive mood 
 3. Generate the plan. Point out its three steps and the local AI explanation.
 4. Download the plan, then click “I’m heading outside”. Show the screen-away view.
 5. Click “I’m back”, add “I heard the wind in the trees,” and save.
-6. Open “My moments” to show the local journal. Open “Why it’s open” to explain the model and privacy.
+6. Open “My moments” to show the local journal and explain that reflections stay in the browser.
 
 Before posting, attach your repository or live-demo link and a screenshot or recording. This document is a draft; it has not been posted. The default NLP workflow is tested. Optional live Ollama inference has not been verified here.

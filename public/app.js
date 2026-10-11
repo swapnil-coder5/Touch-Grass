@@ -43,8 +43,6 @@ $('download-button').addEventListener('click', () => {
   const text = `${currentPlan.title}\n${currentPlan.minutes} minutes · ${currentPlan.category}\n\n${currentPlan.description}\n\n${currentPlan.steps.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nNotice: ${currentPlan.noticing}\n\n${currentPlan.safety}\n\nMade with Touch Grass — local AI, open air.`;
   const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); const a = document.createElement('a'); a.href = url; a.download = 'my-little-adventure.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
-$('about-button').addEventListener('click', () => $('about-dialog').showModal());
-$('close-about').addEventListener('click', () => $('about-dialog').close());
 
 function renderMoments() {
   const list = $('moments-list'); list.replaceChildren();
