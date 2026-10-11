@@ -1,8 +1,14 @@
 const $ = id => document.getElementById(id);
 let minutes = 15, energy = 'medium', currentPlan, endAt, clock;
+const MOMENTS_KEY = 'touch-grass-moments';
+const DRAFT_KEY = 'touch-grass-reflection-draft';
 const views = ['planner-view', 'result-view', 'outside-view', 'reflection-view'];
 function show(id) { for (const view of views) $(view).hidden = view !== id; window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function stopClock() { clearInterval(clock); clock = undefined; }
+function readStored(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
+}
 for (const [id, update] of [['time-options', value => minutes = Number(value)], ['energy-options', value => energy = value]]) {
   $(id).addEventListener('click', event => {
     const button = event.target.closest('button'); if (!button) return;
@@ -32,10 +38,35 @@ $('start-button').addEventListener('click', () => {
   tick(); clock = setInterval(tick, 1000); show('outside-view');
 });
 $('cancel-button').addEventListener('click', () => { stopClock(); show('result-view'); });
-$('return-button').addEventListener('click', () => { stopClock(); $('reflection').value = ''; $('saved-message').textContent = ''; show('reflection-view'); });
+$('return-button').addEventListener('click', () => {
+  stopClock();
+  const draft = readStored(DRAFT_KEY, null);
+  $('reflection').value = draft?.title === currentPlan.title ? draft.note : '';
+  $('saved-message').textContent = draft?.title === currentPlan.title ? 'Your saved draft is ready.' : '';
+  show('reflection-view');
+});
+$('reflection').addEventListener('input', () => {
+  const note = $('reflection').value.trim();
+  try {
+    if (!note) localStorage.removeItem(DRAFT_KEY);
+    else localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      date: new Date().toISOString(),
+      title: currentPlan?.title || readStored(DRAFT_KEY, null)?.title || 'My outdoor moment',
+      note,
+    }));
+    $('saved-message').textContent = note ? 'Draft saved automatically in this browser.' : '';
+  } catch { $('saved-message').textContent = 'Browser storage is unavailable. Copy your note to keep it.'; }
+});
 $('save-reflection').addEventListener('click', () => {
   if (!$('reflection').value.trim()) { $('saved-message').textContent = 'Write a little note first, or start another adventure.'; return; }
-  try { const moments = JSON.parse(localStorage.getItem('touch-grass-moments') || '[]'); moments.push({ date: new Date().toISOString(), title: currentPlan.title, note: $('reflection').value.trim() }); localStorage.setItem('touch-grass-moments', JSON.stringify(moments.slice(-30))); $('saved-message').textContent = 'Saved in this browser. Your little moment is yours.'; }
+  try {
+    const draft = readStored(DRAFT_KEY, null);
+    const moments = readStored(MOMENTS_KEY, []);
+    moments.push({ date: new Date().toISOString(), title: currentPlan?.title || draft?.title || 'My outdoor moment', note: $('reflection').value.trim() });
+    localStorage.setItem(MOMENTS_KEY, JSON.stringify(moments.slice(-30)));
+    localStorage.removeItem(DRAFT_KEY);
+    $('saved-message').textContent = 'Saved in this browser. Your little moment is yours.';
+  }
   catch { $('saved-message').textContent = 'Browser storage is unavailable. You can copy your note to keep it.'; }
 });
 $('new-plan').addEventListener('click', () => show('planner-view'));
@@ -47,8 +78,17 @@ $('download-button').addEventListener('click', () => {
 function renderMoments() {
   const list = $('moments-list'); list.replaceChildren();
   try {
-    const notes = JSON.parse(localStorage.getItem('touch-grass-moments') || '[]');
-    if (!notes.length) { const p = document.createElement('p'); p.textContent = 'Your first little adventure is waiting. Head outside, then save a note when you return.'; list.append(p); }
+    const notes = readStored(MOMENTS_KEY, []);
+    const draft = readStored(DRAFT_KEY, null);
+    if (!notes.length && !draft?.note) { const p = document.createElement('p'); p.textContent = 'Your first little adventure is waiting. Head outside, then save a note when you return.'; list.append(p); }
+    if (draft?.note) {
+      const article = document.createElement('article'); article.className = 'moment';
+      const heading = document.createElement('strong'); heading.textContent = `Unfinished: ${draft.title}`;
+      const date = document.createElement('small'); date.textContent = `Draft saved ${new Date(draft.date).toLocaleDateString()}`;
+      const p = document.createElement('p'); p.textContent = draft.note;
+      const resume = document.createElement('button'); resume.className = 'text-button'; resume.dataset.resumeDraft = 'true'; resume.textContent = 'Continue writing →';
+      article.append(heading, date, p, resume); list.append(article);
+    }
     for (const note of notes.slice().reverse()) {
       const article = document.createElement('article'); article.className = 'moment';
       const heading = document.createElement('strong'); heading.textContent = note.title;
@@ -61,4 +101,12 @@ function renderMoments() {
 }
 $('moments-button').addEventListener('click', () => { renderMoments(); $('moments-dialog').showModal(); });
 $('close-moments').addEventListener('click', () => $('moments-dialog').close());
-$('clear-moments').addEventListener('click', () => { localStorage.removeItem('touch-grass-moments'); renderMoments(); });
+$('moments-list').addEventListener('click', event => {
+  if (!event.target.closest('[data-resume-draft]')) return;
+  const draft = readStored(DRAFT_KEY, null); if (!draft?.note) return;
+  currentPlan = { title: draft.title };
+  $('reflection').value = draft.note;
+  $('saved-message').textContent = 'Your saved draft is ready.';
+  $('moments-dialog').close(); show('reflection-view');
+});
+$('clear-moments').addEventListener('click', () => { localStorage.removeItem(MOMENTS_KEY); renderMoments(); });

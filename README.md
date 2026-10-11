@@ -25,7 +25,7 @@ The server listens on port 3000. Open that port in your browser on your own mach
 - Six curated activities: listening walks, color hunts, bird listening, movement, gardening, and walking catch-ups.
 - Three concrete steps, a noticing prompt, and route/weather reminders.
 - Downloadable text plan and a screen-away timer.
-- Browser-only reflection journal with viewing and deletion.
+- Browser-only reflection journal with automatic draft recovery, viewing, and deletion.
 - Responsive layout, keyboard-accessible controls, and model/ranking explanations.
 - Optional Ollama encouragement; the local NLP plan still works if Ollama is unavailable.
 
