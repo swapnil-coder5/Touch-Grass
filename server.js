@@ -43,7 +43,10 @@ const server = http.createServer(async (req, res) => {
     const filename = path.resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
     if (!filename.startsWith(root + path.sep)) return json(res, 403, { error: 'Forbidden' });
     const data = await readFile(filename);
-    res.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream' });
+    res.writeHead(200, {
+      'Content-Type': types[path.extname(filename)] || 'application/octet-stream',
+      'Cache-Control': 'no-cache',
+    });
     res.end(req.method === 'HEAD' ? undefined : data);
   } catch (error) {
     json(res, error.code === 'ENOENT' ? 404 : 400, { error: error.code === 'ENOENT' ? 'Not found' : 'Could not read that request. Please try again.' });

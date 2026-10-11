@@ -9,6 +9,7 @@ test('HTTP app serves the UI and executes local NLP without an external AI servi
     await Promise.race([once(child.stdout, 'data'), once(child, 'exit').then(() => { throw new Error('Server failed to start'); }), new Promise((_, reject) => { const timer = setTimeout(() => reject(new Error('Startup timed out')), 5000); timer.unref(); })]);
     const root = await fetch('http://127.0.0.1:3109');
     assert.equal(root.status, 200);
+    assert.equal(root.headers.get('cache-control'), 'no-cache');
     assert.ok((await root.text()).includes('Find my little adventure'));
     const health = await fetch('http://127.0.0.1:3109/api/health');
     assert.equal((await health.json()).engine, 'wink-nlp');
