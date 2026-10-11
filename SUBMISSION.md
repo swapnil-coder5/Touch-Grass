@@ -1,6 +1,6 @@
 # Touch Grass — your next little adventure
 
-I built **Touch Grass**, a tiny open-source AI planner that turns “I’ve been staring at my screen all day” into a doable outdoor break.
+I built **Touch Grass**, a tiny local AI planner that turns “I’ve been staring at my screen all day” into a doable outdoor break.
 
 Tell it your mood, how much time you have, your energy, and what’s nearby. It gives you one small adventure: listen for birds, hunt for a color, check on a growing plant, take a walking catch-up, or simply find a quiet corner. Three steps and one thing to notice. Then it asks you to lock your screen and go outside. When you return, you can keep a small reflection, stored only in your browser.
 

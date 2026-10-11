@@ -64,4 +64,4 @@ For Render, the included `render.yaml` defines a free Node web service, installs
 
 Edit `catalog` in `planner.js` to add activities or interests. Scoring is explicit: matched lemmas carry the largest weight, energy affects preference, unavailable surroundings exclude activities, and negated interests reduce scores. The AI explanation shows the matching signals.
 
-MIT license. Dependency licenses remain with their respective authors.
+No license is granted for the Touch Grass application code. All rights are reserved. Third-party dependencies remain available under their respective licenses.
